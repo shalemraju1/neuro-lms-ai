@@ -1,0 +1,42 @@
+<h2>Dashboard</h2>
+<p>Logged in as: {{ role }}</p>
+
+<hr>
+
+{% if role == "admin" %}
+    <h3>Admin Panel</h3>
+    <a href="/create_course">Create Course</a><br>
+    <a href="/risk_dashboard">AI Risk Dashboard</a>
+{% endif %}
+
+{% if role == "trainer" %}
+    <h3>Trainer Panel</h3>
+    <p>Upload training materials below:</p>
+{% endif %}
+
+{% if role == "user" %}
+    <h3>Learner Panel</h3>
+    <p>Available courses:</p>
+{% endif %}
+
+<hr>
+
+<h3>Courses</h3>
+
+{% for course in courses %}
+    <div>
+        <b>{{ course.title }}</b><br>
+        {{ course.description }}<br>
+
+        {% if role == "trainer" %}
+            <a href="/upload_script/{{ course.id }}">Upload Script (AI)</a><br>
+            <a href="/upload_pdf/{{ course.id }}">Upload PDF (AI)</a>
+        {% endif %}
+
+        {% if role == "user" %}
+            <a href="/take_quiz/{{ course.id }}">Take Quiz</a>
+        {% endif %}
+
+        <hr>
+    </div>
+{% endfor %}
