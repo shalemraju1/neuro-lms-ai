@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Results - NeuroLMS{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 60px auto; text-align: center;">
+    <div style="font-size: 64px; margin-bottom: 20px;">
+        {% if score >= 80 %}
+        🎉
+        {% elif score >= 60 %}
+        ✅
+        {% else %}
+        📋
+        {% endif %}
+    </div>
+    
+    <h2 style="color: #2d3748; margin-bottom: 20px;">Quiz Complete!</h2>
+    
+    <div class="card" style="background: #f0fff4; border-left: 4px solid #48bb78; border-radius: 10px; padding: 30px; margin-bottom: 30px;">
+        <div style="text-align: left;">
+            <p style="color: #667eea; font-weight: 600; margin: 0 0 20px 0; font-size: 16px;">📊 Your Results:</p>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="padding: 15px; background: #edf2f7; border-radius: 6px;">
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Score
+                        </div>
+                        <div style="font-size: 32px; font-weight: bold; color: #667eea;">
+                            {{ "%.1f"|format(score) }}%
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 15px; background: #edf2f7; border-radius: 6px;">
+                        <div style="color: #718096; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Correct Answers
+                        </div>
+                        <div style="font-size: 32px; font-weight: bold; color: #48bb78;">
+                            {{ correct_count }}/{{ total_count }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 15px; background: white; border-radius: 6px; margin-bottom: 15px; border-left: 3px solid #667eea;">
+                <div style="color: #718096; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                    🎯 Risk Assessment
+                </div>
+                <div style="font-size: 24px; font-weight: bold; color: {% if risk <= 30 %}#48bb78{% elif risk <= 70 %}#ed8936{% else %}#f56565{% endif %};">
+                    {{ "%.1f"|format(risk) }}% Risk
+                </div>
+                <div style="color: #4a5568; font-size: 12px; margin-top: 8px;">
+                    {% if risk <= 30 %}
+                    ✅ Low risk - You're on track!
+                    {% elif risk <= 70 %}
+                    ⚠️ Moderate risk - Keep practicing
+                    {% else %}
+                    🚨 High risk - Additional practice recommended
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="padding: 12px; background: #fef3f3; border-radius: 6px; border-left: 3px solid #f6ad55;">
+                <p style="color: #744210; margin: 0; font-size: 13px;">
+                    📝 Tips: Review course materials and notes from your trainer to improve your score on the next attempt.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <a href="/take_quiz/{{ course.id }}" class="btn" style="text-decoration: none; text-align: center;">
+            🔄 Retake Quiz
+        </a>
+        <a href="/dashboard" style="background: #edf2f7; color: #667eea; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-align: center; transition: background 0.3s ease;">
+            🏠 Back to Dashboard
+        </a>
+    </div>
+
+    <div style="margin-top: 40px;">
+        <div style="padding: 20px; background: #edf2f7; border-radius: 8px;">
+            <h4 style="color: #667eea; margin: 0 0 12px 0;">📚 Course: {{ course.title }}</h4>
+            <p style="color: #4a5568; margin: 0; font-size: 14px;">
+                {{ course.description }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    a.btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    a:not(.btn):hover {
+        background: #cbd5e0 !important;
+    }
+</style>
+{% endblock %}

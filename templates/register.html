@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Register - NeuroLMS{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Create Account</h2>
+
+    {% if error %}
+    <div class="alert error">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/register">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your full name">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required placeholder="Create a password">
+        </div>
+
+        <button type="submit" class="btn">Create Account</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 20px;">
+        Already have an account? <a href="/" style="color: #667eea; text-decoration: none; font-weight: 600;">Login here</a>
+    </p>
+</div>
+{% endblock %}

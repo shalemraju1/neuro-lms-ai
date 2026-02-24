@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}My Trainees - NeuroLMS{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 10px;">👥 My Trainees</h2>
+<div style="color: #666; margin-bottom: 30px;">Students assigned to you</div>
+
+<div style="max-width: 1000px; margin: 0 auto;">
+    {% if trainees %}
+        <div style="margin-bottom: 20px;">
+            <div style="background: #edf2f7; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                <p style="color: #667eea; margin: 0; font-weight: 600;">
+                    👥 You have <strong>{{ trainees|length }}</strong> trainee{{ 's' if trainees|length != 1 else '' }} assigned to you
+                </p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+            {% for trainee in trainees %}
+            <div class="course-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border-left: 4px solid #48bb78;">
+                <div style="margin-bottom: 15px;">
+                    <h4 style="color: #2d3748; margin: 0 0 5px 0; font-size: 16px;">
+                        👤 {{ trainee.name }}
+                    </h4>
+                    <p style="color: #718096; margin: 0; font-size: 12px;">ID: {{ trainee.id }}</p>
+                </div>
+
+                <div style="background: #f7fafc; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                    <p style="color: #4a5568; margin: 5px 0; font-size: 13px;">
+                        📧 <strong>Email:</strong> {{ trainee.email }}
+                    </p>
+                    <p style="color: #4a5568; margin: 5px 0; font-size: 13px;">
+                        🏷️ <strong>Role:</strong> <span style="background: #c6f6d5; color: #22543d; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">{{ trainee.role }}</span>
+                    </p>
+                </div>
+
+                <div style="border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <p style="color: #718096; font-size: 12px; margin: 0;">
+                        ✅ Assigned to you since enrollment
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card" style="background: #fef3f3; border-left: 4px solid #f6ad55; text-align: center;">
+            <p style="color: #744210; margin: 0; font-size: 14px;">
+                📋 You have no trainees assigned yet. Contact your administrator to assign students to you.
+            </p>
+        </div>
+    {% endif %}
+
+    <!-- Summary Card -->
+    <div style="margin-top: 30px; padding: 20px; background: #edf2f7; border-radius: 10px;">
+        <h4 style="color: #667eea; margin: 0 0 15px 0;">📊 Your Training Overview</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div style="padding: 12px; background: white; border-radius: 6px; border-left: 3px solid #667eea;">
+                <div style="color: #718096; font-size: 12px; margin-bottom: 5px;">TOTAL TRAINEES</div>
+                <div style="font-size: 28px; font-weight: bold; color: #667eea;">{{ trainees|length }}</div>
+            </div>
+
+            {% if trainees %}
+            <div style="padding: 12px; background: white; border-radius: 6px; border-left: 3px solid #48bb78;">
+                <div style="color: #718096; font-size: 12px; margin-bottom: 5px;">TRAINEE STATUS</div>
+                <div style="font-size: 28px; font-weight: bold; color: #48bb78;">✅ Active</div>
+            </div>
+            {% endif %}
+
+            <div style="padding: 12px; background: white; border-radius: 6px; border-left: 3px solid #ed8936;">
+                <div style="color: #718096; font-size: 12px; margin-bottom: 5px;">YOUR ROLE</div>
+                <div style="font-size: 18px; font-weight: bold; color: #ed8936;">Trainer</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Links -->
+    <div style="margin-top: 30px; display: flex; gap: 10px;">
+        <a href="/dashboard" class="btn" style="text-decoration: none; text-align: center;">
+            🏠 Back to Dashboard
+        </a>
+        {% if trainees %}
+        <a href="/manage_users" style="background: #cbd5e0; color: #2d3748; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-align: center; transition: background 0.3s ease;">
+            👥 Manage All Users
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .course-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn {
+        cursor: pointer;
+        background: #667eea;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        background: #764ba2;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    a:not(.btn):hover {
+        background: #a0aec0 !important;
+    }
+</style>
+{% endblock %}

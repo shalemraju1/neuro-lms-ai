@@ -1,6 +1,33 @@
-<h2>NeuroLMS Login</h2>
-<form method="POST" action="/login">
-    Email: <input type="text" name="email"><br>
-    Password: <input type="password" name="password"><br>
-    <button type="submit">Login</button>
-</form>
+{% extends "base.html" %}
+
+{% block title %}Login - NeuroLMS{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Welcome Back</h2>
+
+    {% if error %}
+    <div class="alert error">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/login">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required placeholder="Enter your password">
+        </div>
+
+        <button type="submit" class="btn">Sign In</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 20px;">
+        Don't have an account? <a href="/register" style="color: #667eea; text-decoration: none; font-weight: 600;">Register here</a>
+    </p>
+</div>
+{% endblock %}

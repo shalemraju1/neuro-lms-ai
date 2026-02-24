@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Take Quiz - NeuroLMS{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 10px;">🎯 {{ course.title }} Quiz</h2>
+<div style="color: #666; margin-bottom: 30px;">{{ quizzes|length }} Question{{ 's' if quizzes|length != 1 else '' }} | Time your answers</div>
+
+<div id="timer" style="background: #edf2f7; border-left: 4px solid #667eea; padding: 15px; border-radius: 8px; margin-bottom: 30px; font-size: 18px; font-weight: bold; color: #667eea;">
+    ⏱️ Time Elapsed: <span id="timer-display">0:00</span>
+</div>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <form method="POST" id="quiz-form" style="background: #f8f9fa; padding: 30px; border-radius: 10px;">
+        {% for quiz in quizzes %}
+        <div class="quiz-question" style="background: white; padding: 25px; border-radius: 8px; border-left: 4px solid #48bb78; margin-bottom: 25px;">
+            <div style="display: flex; align-items: baseline; margin-bottom: 15px;">
+                <span style="background: #48bb78; color: white; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-right: 12px;">
+                    Q{{ loop.index }}
+                </span>
+                <h3 style="margin: 0; color: #2d3748; font-size: 16px;">
+                    {{ quiz.question }}
+                </h3>
+            </div>
+            
+            <div style="margin-top: 12px;">
+                <input 
+                    type="text" 
+                    name="answer_{{ quiz.id }}" 
+                    placeholder="Enter your answer..." 
+                    required
+                    style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 14px; transition: border-color 0.3s ease;"
+                    onmouseover="this.style.borderColor='#667eea'"
+                    onmouseout="this.style.borderColor='#e2e8f0'"
+                    onfocus="this.style.borderColor='#667eea'; this.style.outline='none'"
+                    onblur="this.style.borderColor='#e2e8f0'"
+                />
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Hidden fields for tracking attempts and time -->
+        <input type="hidden" name="attempts" id="attempts-input" value="1">
+        <input type="hidden" name="time_taken" id="time-input" value="0">
+
+        <div style="background: #edf2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #667eea; margin: 0; font-size: 14px;">
+                ℹ️ Please answer all questions. Answers are case-insensitive.
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn" style="flex: 1;">
+                ✅ Submit Quiz
+            </button>
+            <a href="/dashboard" style="flex: 1; background: #cbd5e0; color: #2d3748; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-align: center; transition: background 0.3s ease;">
+                ❌ Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    let seconds = 0;
+    
+    function updateTimer() {
+        seconds++;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        const display = `${mins}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('timer-display').textContent = display;
+        document.getElementById('time-input').value = seconds;
+    }
+    
+    // Update timer every second
+    setInterval(updateTimer, 1000);
+    
+    // Update attempts count (simple: just track form submissions)
+    document.getElementById('quiz-form').addEventListener('submit', function() {
+        const attemptsInput = document.getElementById('attempts-input');
+        attemptsInput.value = parseInt(attemptsInput.value) + 1;
+    });
+</script>
+
+<style>
+    .quiz-question:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    a:hover {
+        background: #a0aec0 !important;
+    }
+</style>
+{% endblock %}

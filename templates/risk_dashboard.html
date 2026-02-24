@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}AI Risk Dashboard - NeuroLMS{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 10px;">🎯 AI Risk Assessment Dashboard</h2>
+<div style="color: #666; margin-bottom: 30px;">Monitor learner progress and identify at-risk students</div>
+
+<div style="max-width: 1200px; margin: 0 auto;">
+    {% if trainer_data %}
+        {% for trainer_info in trainer_data %}
+        <div style="margin-bottom: 40px;">
+            <!-- Trainer Header -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 20px;">👨‍🏫 {{ trainer_info.trainer.name }}</h3>
+                <p style="margin: 8px 0 0 0; opacity: 0.9;">{{ trainer_info.students|length }} student{{ 's' if trainer_info.students|length != 1 else '' }} being monitored</p>
+            </div>
+
+            <!-- Students Table -->
+            <div style="overflow-x: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                <table style="width: 100%; border-collapse: collapse; background: white;">
+                    <thead>
+                        <tr style="background: #f7fafc; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 15px 20px; text-align: left; font-weight: 600; color: #2d3748;">👤 Trainee Name</th>
+                            <th style="padding: 15px 20px; text-align: left; font-weight: 600; color: #2d3748;">📚 Course</th>
+                            <th style="padding: 15px 20px; text-align: center; font-weight: 600; color: #2d3748;">📊 Score</th>
+                            <th style="padding: 15px 20px; text-align: center; font-weight: 600; color: #2d3748;">🎯 Risk Score</th>
+                            <th style="padding: 15px 20px; text-align: center; font-weight: 600; color: #2d3748;">⚠️ Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in trainer_info.students %}
+                        <tr style="border-bottom: 1px solid #e2e8f0; transition: background 0.3s ease;" onmouseover="this.style.background='#f7fafc'" onmouseout="this.style.background='white'">
+                            <td style="padding: 15px 20px; color: #2d3748; font-weight: 500;">
+                                {{ student.student_name }}
+                            </td>
+                            <td style="padding: 15px 20px; color: #4a5568;">
+                                {{ student.course_name }}
+                            </td>
+                            <td style="padding: 15px 20px; text-align: center; color: #2d3748; font-weight: 600;">
+                                <span style="background: #edf2f7; padding: 6px 12px; border-radius: 6px;">
+                                    {{ "%.1f"|format(student.score) }}%
+                                </span>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: center; color: #2d3748; font-weight: 600;">
+                                {{ "%.1f"|format(student.risk_score) }}%
+                            </td>
+                            <td style="padding: 15px 20px; text-align: center;">
+                                {% if student.risk_level == "LOW" %}
+                                    <span style="background: #c6f6d5; color: #22543d; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">
+                                        ✅ {{ student.risk_level }}
+                                    </span>
+                                {% elif student.risk_level == "MEDIUM" %}
+                                    <span style="background: #feebc8; color: #7c2d12; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">
+                                        ⚠️ {{ student.risk_level }}
+                                    </span>
+                                {% else %}
+                                    <span style="background: #fed7d7; color: #742a2a; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">
+                                        🚨 {{ student.risk_level }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card" style="background: #edf2f7; border-left: 4px solid #667eea; text-align: center;">
+            <p style="color: #667eea; margin: 0; font-size: 16px;">
+                📊 No trainers with student progress data yet. Create courses and quizzes to start monitoring learner risks.
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Legend -->
+<div style="margin-top: 50px; padding: 25px; background: #f7fafc; border-radius: 10px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+    <h4 style="color: #667eea; margin: 0 0 15px 0;">📖 Risk Level Guide</h4>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <div style="padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #48bb78;">
+            <div style="font-weight: 600; color: #22543d; margin-bottom: 5px;">✅ LOW RISK (0-39%)</div>
+            <p style="color: #4a5568; margin: 0; font-size: 13px;">Student is performing well and on track. Monitor regularly.</p>
+        </div>
+        <div style="padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #ed8936;">
+            <div style="font-weight: 600; color: #7c2d12; margin-bottom: 5px;">⚠️ MEDIUM RISK (40-69%)</div>
+            <p style="color: #4a5568; margin: 0; font-size: 13px;">Student needs some support. Provide additional resources.</p>
+        </div>
+        <div style="padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #f56565;">
+            <div style="font-weight: 600; color: #742a2a; margin-bottom: 5px;">🚨 HIGH RISK (70%+)</div>
+            <p style="color: #4a5568; margin: 0; font-size: 13px;">Student needs immediate intervention. Contact trainer.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    table tr:last-child {
+        border-bottom: none !important;
+    }
+
+    @media (max-width: 768px) {
+        table {
+            font-size: 13px;
+        }
+
+        table th, table td {
+            padding: 10px 12px !important;
+        }
+    }
+</style>
+{% endblock %}

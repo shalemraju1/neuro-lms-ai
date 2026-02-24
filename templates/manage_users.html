@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - NeuroLMS{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 30px;">👥 User Management</h2>
+
+<!-- Trainers and Their Students Section -->
+<div>
+    <h3 style="color: #667eea; margin-bottom: 20px;">👨‍🏫 Trainers & Their Students</h3>
+
+    {% if trainer_data %}
+        {% for item in trainer_data %}
+        <div class="course-card" style="border-left: 4px solid #3182ce; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div>
+                    <div class="course-title" style="color: #3182ce; margin: 0;">
+                        {{ item.trainer.name }}
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        📧 {{ item.trainer.email }}
+                    </div>
+                </div>
+                <div style="background: #e6f2ff; padding: 8px 12px; border-radius: 6px; font-weight: bold; color: #3182ce;">
+                    {{ item.students|length }} {{ "student" if item.students|length == 1 else "students" }}
+                </div>
+            </div>
+
+            {% if item.students %}
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <div style="font-weight: 600; color: #333; margin-bottom: 10px;">📚 Assigned Students:</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        {% for student in item.students %}
+                        <li style="padding: 8px 0; border-bottom: 1px solid #e1e5e9; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 500; color: #333;">{{ student.name }}</div>
+                                <div style="font-size: 14px; color: #666;">{{ student.email }}</div>
+                            </div>
+                            <div style="color: #48bb78; font-size: 12px; font-weight: bold;">✓ Assigned</div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <div style="background: #fef3f3; padding: 15px; border-radius: 8px; margin-top: 10px; color: #c53030; font-size: 14px;">
+                    ℹ️ No students currently assigned to this trainer
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card" style="background: #fef3f3; border-left: 4px solid #e53e3e;">
+            <p style="color: #c53030; margin: 0;">
+                ⚠️ No trainers found in the system
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Unassigned Users Section -->
+{% if unassigned_users %}
+<div style="margin-top: 40px; margin-bottom: 30px;">
+    <h3 style="color: #f6ad55; margin-bottom: 20px;">⚠️ Unassigned Students</h3>
+
+    <div class="course-card" style="border-left: 4px solid #f6ad55;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div>
+                <div style="font-weight: 600; color: #333;">
+                    Students Waiting for Trainer Assignment
+                </div>
+                <div style="color: #666; font-size: 14px;">
+                    These learners have not been assigned to a trainer yet
+                </div>
+            </div>
+            <div style="background: #fffaf0; padding: 8px 12px; border-radius: 6px; font-weight: bold; color: #f6ad55;">
+                {{ unassigned_users|length }} {{ "student" if unassigned_users|length == 1 else "students" }}
+            </div>
+        </div>
+
+        <div style="background: #faf9f7; padding: 15px; border-radius: 8px; margin-top: 10px;">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for user in unassigned_users %}
+                <li style="padding: 12px 0; border-bottom: 1px solid #e1e5e9; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 500; color: #333;">{{ user.name }}</div>
+                        <div style="font-size: 14px; color: #666;">{{ user.email }}</div>
+                    </div>
+                    <div style="color: #f6ad55; font-size: 12px; font-weight: bold;">⏳ Unassigned</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Summary Statistics -->
+<div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #667eea;">
+    <h3 style="color: #667eea; margin-top: 0;">📊 Summary Statistics</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #3182ce;">{{ trainer_data|length }}</div>
+            <div style="color: #666; font-size: 14px; margin-top: 5px;">Total Trainers</div>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #48bb78;">
+                {% set total_assigned = trainer_data|map(attribute='students')|map('length')|sum %}
+                {{ total_assigned }}
+            </div>
+            <div style="color: #666; font-size: 14px; margin-top: 5px;">Assigned Students</div>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #f6ad55;">{{ unassigned_users|length }}</div>
+            <div style="color: #666; font-size: 14px; margin-top: 5px;">Unassigned Students</div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Help -->
+<div style="margin-top: 30px; padding: 20px; background: #edf2f7; border-radius: 10px;">
+    <h4 style="color: #2d3748; margin-top: 0;">💡 Manage Trainer Assignments</h4>
+    <p style="color: #4a5568; font-size: 14px; margin: 0;">
+        To assign or reassign trainers to students, use the command line tool:
+    </p>
+    <div style="background: white; padding: 15px; border-radius: 6px; margin-top: 10px; font-family: monospace; font-size: 12px; overflow-x: auto;">
+        <div style="color: #c53030;">python manage_users.py assign_trainer &lt;user_email&gt; &lt;trainer_email&gt;</div>
+        <div style="color: #c53030; margin-top: 5px;">python manage_users.py unassign_trainer &lt;user_email&gt;</div>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="/dashboard" style="color: #667eea; text-decoration: none; font-weight: 600;">← Back to Dashboard</a>
+</div>
+{% endblock %}

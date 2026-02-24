@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Note - NeuroLMS{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 10px;">📝 Add Course Note</h2>
+<div style="color: #666; margin-bottom: 30px;">Course: <strong>{{ course.title }}</strong></div>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="card" style="background: #edf2f7; border-left: 4px solid #667eea; margin-bottom: 30px;">
+        <p style="color: #2d3748; margin: 0;">
+            ✍️ Add an instructional note to this course. This note will be visible to your students and help guide their learning.
+        </p>
+    </div>
+
+    <form method="POST" style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 30px;">
+        <div class="form-group">
+            <label for="content" style="display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px;">
+                📚 Note Content
+            </label>
+            <textarea 
+                id="content" 
+                name="content" 
+                rows="12" 
+                required 
+                placeholder="Enter your note content here. You can include instructions, tips, important points, or any guidance for students learning this course..."
+                style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 14px; resize: vertical;"
+            ></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn" style="flex: 1;">
+                ✅ Save Note
+            </button>
+            <a href="/dashboard" style="flex: 1; background: #cbd5e0; color: #2d3748; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-align: center; transition: background 0.3s ease;">
+                ❌ Cancel
+            </a>
+        </div>
+    </form>
+
+    {% if existing_notes %}
+    <div>
+        <h3 style="color: #667eea; margin-bottom: 20px;">📋 Your Notes for This Course</h3>
+        
+        {% for note in existing_notes %}
+        <div class="course-card" style="border-left: 4px solid #48bb78; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                <div style="flex: 1;">
+                    <div style="font-size: 12px; color: #718096;">
+                        📅 Created: {{ note.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        {% if note.updated_at != note.created_at %}
+                        | Updated: {{ note.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                        {% endif %}
+                    </div>
+                </div>
+                <span style="background: #c6f6d5; color: #22543d; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+                    Note ID: {{ note.id }}
+                </span>
+            </div>
+            <div style="white-space: pre-wrap; word-break: break-word; color: #2d3748;">{{ note.content }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card" style="background: #fef3f3; border-left: 4px solid #f6ad55; text-align: center;">
+        <p style="color: #c05621; margin: 0;">
+            ℹ️ No notes yet for this course. Create your first note above!
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    a:hover {
+        background: #a0aec0 !important;
+    }
+</style>
+{% endblock %}

@@ -1,42 +1,236 @@
-<h2>Dashboard</h2>
-<p>Logged in as: {{ role }}</p>
+{% extends "base.html" %}
 
-<hr>
+{% block title %}Dashboard - NeuroLMS{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 30px;">Dashboard</h2>
 
 {% if role == "admin" %}
-    <h3>Admin Panel</h3>
-    <a href="/create_course">Create Course</a><br>
-    <a href="/risk_dashboard">AI Risk Dashboard</a>
+<div class="card">
+    <h3>🛠️ Admin Panel</h3>
+    <p>Manage the learning management system</p>
+    <div style="margin-top: 15px;">
+        <a href="/create_course" class="action-btn">Create Course</a>
+        <a href="/create_trainer" class="action-btn secondary">Add Trainer</a>
+        <a href="/manage_users" class="action-btn secondary">Manage Users</a>
+        <a href="/admin/trainers_trainees" class="action-btn secondary">Trainers & Trainees</a>
+        <a href="/risk_dashboard" class="action-btn secondary">🎯 AI Risk Dashboard</a>
+    </div>
+</div>
+
+<!-- Admin Statistics -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 30px 0;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 8px;">{{ stats.total_courses }}</div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">Total Courses</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 8px;">{{ stats.total_trainers }}</div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">Active Trainers</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 8px;">{{ stats.total_users }}</div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">Total Learners</div>
+    </div>
+</div>
 {% endif %}
 
 {% if role == "trainer" %}
-    <h3>Trainer Panel</h3>
-    <p>Upload training materials below:</p>
+<div class="card">
+    <h3>📚 Trainer Panel</h3>
+    <p>Upload training materials and manage course content</p>
+    <div style="margin-top: 15px;">
+        <a href="/my_trainees" class="action-btn">👥 My Trainees</a>
+    </div>
+</div>
+
+<!-- Trainer Statistics -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin: 30px 0;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.2rem; font-weight: 700; margin-bottom: 6px;">{{ stats.total_trainees }}</div>
+        <div style="font-size: 0.85rem; opacity: 0.9;">Assigned Trainees</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 18px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.2rem; font-weight: 700; margin-bottom: 6px;">{{ stats.available_courses }}</div>
+        <div style="font-size: 0.85rem; opacity: 0.9;">Courses to Teach</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white; padding: 18px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.2rem; font-weight: 700; margin-bottom: 6px;">{{ stats.total_quizzes }}</div>
+        <div style="font-size: 0.85rem; opacity: 0.9;">Quizzes Created</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; padding: 18px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.2rem; font-weight: 700; margin-bottom: 6px;">{{ stats.total_notes }}</div>
+        <div style="font-size: 0.85rem; color: #555;">Notes Created</div>
+    </div>
+</div>
+
+{% if trainees %}
+<div style="margin-top: 30px;">
+    <h3 style="color: #667eea;">👥 My Trainees ({{ trainees|length }})</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+        {% for trainee in trainees %}
+        <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #667eea;">
+            <div style="font-weight: 600; color: #1a1a1a; font-size: 1rem;">{{ trainee.name }}</div>
+            <div style="font-size: 0.85rem; color: #666; margin-top: 5px;">{{ trainee.email }}</div>
+            <div style="font-size: 0.8rem; color: #999; margin-top: 3px;">ID: #{{ trainee.id }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 {% endif %}
 
 {% if role == "user" %}
-    <h3>Learner Panel</h3>
-    <p>Available courses:</p>
+<div class="card">
+    <h3>🎓 My Learning Journey</h3>
+    <p>Continue your enrolled courses and track your progress</p>
+</div>
+
+<!-- User Progress Statistics -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 30px 0;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 8px;">{{ stats.enrolled_courses }}</div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">Enrolled Courses</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 8px;">{{ stats.quizzes_taken }}/{{ stats.total_quizzes }}</div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">Quizzes Completed</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; word-break: break-word;">{{ stats.trainer_name }}</div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">Your Trainer</div>
+    </div>
+</div>
 {% endif %}
 
-<hr>
+<!-- User Risk Scores Section -->
+{% if role == "user" %}
+<div style="margin-top: 30px;">
+    <h3 style="color: #667eea; margin-bottom: 15px;">📊 Your Risk Assessment History</h3>
+    
+    {% if risk_scores %}
+        <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            <th style="padding: 15px; text-align: left; font-weight: 600;">Course</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600;">Score</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600;">Risk Level</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600;">Attempts</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600;">Time (min)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for progress in risk_scores[:10] %}
+                        {% set course = progress.course if progress.course else 'Unknown' %}
+                        {% set course_name = course.title if course != 'Unknown' else 'Unknown Course' %}
+                        <tr style="border-bottom: 1px solid #e2e8f0; {% if loop.index % 2 == 0 %}background: #f8fafc;{% endif %}">
+                            <td style="padding: 12px 15px; color: #1a1a1a;">{{ course_name }}</td>
+                            <td style="padding: 12px 15px; text-align: center; font-weight: 600; color: #667eea;">
+                                {% if progress.score %}{{ (progress.score * 100)|int }}%{% else %}—{% endif %}
+                            </td>
+                            <td style="padding: 12px 15px; text-align: center;">
+                                {% if progress.risk_score %}
+                                    {% if progress.risk_score < 0.3 %}
+                                        <span style="background: #c6f6d5; color: #22543d; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.85rem;">🟢 Low</span>
+                                    {% elif progress.risk_score < 0.6 %}
+                                        <span style="background: #feebc8; color: #7c2d12; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.85rem;">🟡 Medium</span>
+                                    {% else %}
+                                        <span style="background: #fed7d7; color: #742a2a; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.85rem;">🔴 High</span>
+                                    {% endif %}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td style="padding: 12px 15px; text-align: center; color: #666;">{{ progress.attempts if progress.attempts else '—' }}</td>
+                            <td style="padding: 12px 15px; text-align: center; color: #666;">{{ (progress.time_taken / 60)|int if progress.time_taken else '—' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; color: #666;">
+            <p style="margin: 0;">📈 No quiz attempts yet. Complete a quiz to see your risk assessment scores!</p>
+        </div>
+    {% endif %}
+</div>
 
-<h3>Courses</h3>
+<!-- Contact Admin Section -->
+<div style="margin-top: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; color: white;">
+    <h3 style="margin: 0 0 10px 0;">❓ Need Help?</h3>
+    <p style="margin: 0 0 12px 0; opacity: 0.95;">Contact your administrator if you have questions about your courses or progress.</p>
+    <a href="mailto:{{ admin_email }}" style="display: inline-block; background: rgba(255,255,255,0.2); color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: background 0.2s;"
+       onmouseover="this.style.background='rgba(255,255,255,0.3)';"
+       onmouseout="this.style.background='rgba(255,255,255,0.2)';">
+        💌 Email Administrator: {{ admin_email }}
+    </a>
+</div>
+{% endif %}
 
-{% for course in courses %}
-    <div>
-        <b>{{ course.title }}</b><br>
-        {{ course.description }}<br>
+<h3 style="color: #667eea; margin: 30px 0 20px 0;">
+    {% if role == "user" %}
+        � All Available Courses
+    {% elif role == "trainer" %}
+        📚 Available Courses
+    {% else %}
+        📚 All Courses
+    {% endif %}
+</h3>
 
-        {% if role == "trainer" %}
-            <a href="/upload_script/{{ course.id }}">Upload Script (AI)</a><br>
-            <a href="/upload_pdf/{{ course.id }}">Upload PDF (AI)</a>
+{% if courses %}
+    {% for item in courses %}
+    {% set course = item.course if item.is_enrolled is defined else item %}
+    {% set is_enrolled = item.is_enrolled if item.is_enrolled is defined else true %}
+    <div class="course-card">
+        <div class="course-title">{{ course.title }}</div>
+        <div class="course-description">{{ course.description }}</div>
+
+        <div style="margin-top: 15px;">
+            {% if role == "trainer" %}
+                <a href="/upload_script/{{ course.id }}" class="action-btn">📝 Upload Script (AI)</a>
+                <a href="/upload_pdf/{{ course.id }}" class="action-btn secondary">📄 Upload PDF (AI)</a>
+                <a href="/upload_note/{{ course.id }}" class="action-btn secondary">📋 Add Note</a>
+            {% endif %}
+
+            {% if role == "user" %}
+                {% if is_enrolled %}
+                    <a href="/take_quiz/{{ course.id }}" class="action-btn">🎯 Take Quiz</a>
+                {% else %}
+                    <a href="/enroll/{{ course.id }}" class="action-btn">📌 Enroll in Course</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        {% if role == "user" and is_enrolled and course_notes.get(course.id) %}
+        <div style="margin-top: 20px; border-top: 2px solid #e2e8f0; padding-top: 15px;">
+            <h4 style="color: #667eea; margin-bottom: 12px;">📝 Trainer Notes</h4>
+            {% for note in course_notes[course.id] %}
+            <div style="background: #edf2f7; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #667eea;">
+                <div style="font-size: 12px; color: #718096; margin-bottom: 8px;">
+                    📅 {{ note.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% if note.updated_at != note.created_at %}<br/>✏️ Updated: {{ note.updated_at.strftime('%Y-%m-%d %H:%M') }}{% endif %}
+                </div>
+                <div style="color: #2d3748; white-space: pre-wrap; word-break: break-word;">{{ note.content }}</div>
+            </div>
+            {% endfor %}
+        </div>
         {% endif %}
-
-        {% if role == "user" %}
-            <a href="/take_quiz/{{ course.id }}">Take Quiz</a>
-        {% endif %}
-
-        <hr>
     </div>
-{% endfor %}
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: #666;">
+            {% if role == "user" %}
+                No courses available at this time. Check back soon!
+            {% elif role == "trainer" %}
+                No courses available from admin yet. Check back soon for new courses to teach!
+            {% else %}
+                No courses available. Create your first course to get started!
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
+{% endblock %}

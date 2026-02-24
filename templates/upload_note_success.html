@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Note Successfully Added - NeuroLMS{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 60px auto; text-align: center;">
+    <div style="font-size: 72px; margin-bottom: 20px;">✅</div>
+    
+    <h2 style="color: #22543d; margin-bottom: 10px;">Note Successfully Added!</h2>
+    
+    <div class="card" style="background: #f0fff4; border-left: 4px solid #48bb78; border-radius: 10px; padding: 25px; margin-bottom: 30px;">
+        <div style="text-align: left; margin-bottom: 20px;">
+            <p style="color: #667eea; font-weight: 600; margin: 0 0 15px 0;">📚 Your Note Details:</p>
+            
+            <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="margin-bottom: 12px;">
+                    <strong style="color: #2d3748;">Course:</strong>
+                    <span style="color: #718096;">{{ note.course.title }}</span>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <strong style="color: #2d3748;">Created:</strong>
+                    <span style="color: #718096;">{{ note.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+                <div style="margin-bottom: 0;">
+                    <strong style="color: #2d3748;">Note ID:</strong>
+                    <span style="color: #718096;">#{{ note.id }}</span>
+                </div>
+            </div>
+
+            <p style="margin: 15px 0 10px 0;">
+                <strong style="color: #2d3748;">Content Preview:</strong>
+            </p>
+            <div style="background: white; padding: 15px; border-radius: 8px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; color: #4a5568; font-size: 13px; border-left: 3px solid #667eea;">
+                {{ note.content[:500] }}{% if note.content|length > 500 %}...{% endif %}
+            </div>
+        </div>
+
+        <p style="color: #22543d; margin: 0; font-size: 14px;">
+            👥 This note is now available to your students enrolled in
+            <strong>{{ note.course.title }}</strong>
+        </p>
+    </div>
+
+    <div style="display: flex; gap: 15px; justify-content: center;">
+        <a href="/upload_note/{{ note.course_id }}" class="btn" style="flex: 1; max-width: 250px; text-decoration: none; text-align: center;">
+            ➕ Add Another Note
+        </a>
+        <a href="/dashboard" style="flex: 1; max-width: 250px; background: #edf2f7; color: #667eea; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-align: center; transition: background 0.3s ease;">
+            🏠 Back to Dashboard
+        </a>
+    </div>
+
+    <p style="color: #718096; margin-top: 30px; font-size: 14px;">
+        <strong>Next Steps:</strong> Students can view this note when taking your course. Check your <a href="/dashboard" style="color: #667eea; text-decoration: none; font-weight: 600;">dashboard</a> to manage more courses.
+    </p>
+</div>
+
+<style>
+    a.btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    a:not(.btn):hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
