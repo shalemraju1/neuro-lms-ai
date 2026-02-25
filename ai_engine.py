@@ -1,5 +1,12 @@
 import os
-import openai
+try:
+    import openai
+    OPENAI_AVAILABLE = True
+except ImportError:
+    logger.warning("OpenAI library not available. Using fallback methods.")
+    OPENAI_AVAILABLE = False
+    openai = None
+
 from PyPDF2 import PdfReader
 import re
 from typing import Dict, List, Optional
@@ -12,13 +19,17 @@ logger = logging.getLogger(__name__)
 class NeuroLMSAI:
     def __init__(self):
         # Initialize OpenAI client
-        self.api_key = os.getenv('OPENAI_API_KEY')
-        if self.api_key:
-            openai.api_key = self.api_key
-            self.use_openai = True
+        if OPENAI_AVAILABLE:
+            self.api_key = os.getenv('OPENAI_API_KEY')
+            if self.api_key:
+                openai.api_key = self.api_key
+                self.use_openai = True
+            else:
+                self.use_openai = False
+                logger.warning("OpenAI API key not found. Using fallback methods.")
         else:
             self.use_openai = False
-            logger.warning("OpenAI API key not found. Using fallback methods.")
+            logger.warning("OpenAI library not available. Using fallback methods.")
 
     def enhance_script(self, script: str, subject: str = "General") -> str:
         """
